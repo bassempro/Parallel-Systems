@@ -181,6 +181,6 @@ int main() {
 	printf("Runtime of IMPERATIVE_SERIAL in seconds: %f\n", z2);
 	c = getchar();
 
-	//qsort((void *)tweets, 4096, sizeof(tweet), compareTweets);
+	qsort((void *)tweets, 4096, sizeof(tweet), compareTweets);
 	return 0;
 }
