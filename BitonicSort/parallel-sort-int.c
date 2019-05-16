@@ -133,37 +133,28 @@ void bitonicSortRecursive_Serial(tweet * tweets, int lo, int n, enum Direction d
 }
 
 void bitonicMergeRecursive_Parallel(tweet * tweets, int lo, int n, enum Direction dir) {
+	int numThreads = omp_get_max_threads();
+
 	if (n > 1) {
 		int m = n / 2;
-		for (int i = lo; i < lo + m; i++) {
+		int i;
+		#pragma omp parallel for num_threads(numThreads) schedule(dynamic)
+		for (i = lo; i < lo + m; i++) {
 			if (compareTweets(&tweets[i], &tweets[i + m]) == dir) {
 				exchangeElements(tweets, i, i + m);
 				//printf("Swaping elements: %d -  %d\n", i, i + m);
 			}
 		}
-		int numThreads = omp_get_max_threads();
-		#pragma omp parallel sections num_threads(numThreads)
-		{
-			#pragma omp section
-			bitonicMergeRecursive_Parallel(tweets, lo, m, dir);
-			#pragma omp section
-			bitonicMergeRecursive_Parallel(tweets, lo + m, m, dir);
-		}
-		
+		bitonicMergeRecursive_Parallel(tweets, lo, m, dir);
+		bitonicMergeRecursive_Parallel(tweets, lo + m, m, dir);
 	}
 }
 
 void bitonicSortRecursive_Parallel(tweet * tweets, int lo, int n, enum Direction dir) {
 	if (n > 1) {
 		int m = n / 2;
-		int numThreads = omp_get_max_threads();
-		#pragma omp parallel sections num_threads(numThreads)
-		{
-			#pragma omp section
-			bitonicSortRecursive_Parallel(tweets, lo, m, ASCENDING);
-			#pragma omp section
-			bitonicSortRecursive_Parallel(tweets, lo + m, m, DESCENDING);
-		}
+		bitonicSortRecursive_Parallel(tweets, lo, m, ASCENDING);
+		bitonicSortRecursive_Parallel(tweets, lo + m, m, DESCENDING);
 		bitonicMergeRecursive_Parallel(tweets, lo, n, dir);
 	}
 }
@@ -197,7 +188,7 @@ int main() {
 	// recursive serial
 	tweet * tweets = readTweets(n, filenameInput);
 	z1 = bitonicSort(tweets, n, RECURSIVE_SERIAL);
-	writeTweets(tweets, n, "sorted16_rec_serial.tweets");
+	writeTweets(tweets, n, "sorted4096_rec_serial.tweets");
 
 	// imperative serial
 	tweets = readTweets(n, filenameInput);
