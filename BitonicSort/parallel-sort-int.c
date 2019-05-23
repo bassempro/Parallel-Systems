@@ -197,11 +197,11 @@ void MPI_bitonicSort(tweet * tweets, int n) {
 	int name_len;
 	MPI_Get_processor_name(processor_name, &name_len);
 
-	int number;
+	/*int number;
 	number = -1;
 	MPI_Send(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
 	MPI_Recv(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-	printf("Process 1 received number %d from process 0\n", number);
+	printf("Process 1 received number %d from process 0\n", number);*/
 
 	// do sth
 	printf("Hello world from processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
