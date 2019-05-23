@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #include "parallel-sort-tweets.h"
 #include "omp.h"
+#include "mpi.h"
 #include <time.h>
 #include <windows.h>
 
@@ -178,6 +179,37 @@ float bitonicSort(tweet * tweets, int n, enum SortMode mode) {
 	return (((float)time) / CLOCKS_PER_SEC);
 }
 
+void MPI_bitonicSort(tweet * tweets, int n) {
+
+	// initialize - start of parallel section
+	MPI_Init(NULL, NULL);
+	
+	// number of processors
+	int world_size;
+	MPI_Comm_size(MPI_COMM_WORLD, &world_size);
+
+	// rank of current process
+	int world_rank;
+	MPI_Comm_rank(MPI_COMM_WORLD, &world_rank);
+
+	// name of process
+	char processor_name[MPI_MAX_PROCESSOR_NAME];
+	int name_len;
+	MPI_Get_processor_name(processor_name, &name_len);
+
+	int number;
+	number = -1;
+	MPI_Send(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD);
+	MPI_Recv(&number, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+	printf("Process 1 received number %d from process 0\n", number);
+
+	// do sth
+	printf("Hello world from processor %s, rank %d out of %d processors\n", processor_name, world_rank, world_size);
+
+	// finalize - parallel section ends here
+	MPI_Finalize();
+}
+
 int main() {
 	char c;
 	float z1, z2, z3, z4;
@@ -185,7 +217,10 @@ int main() {
 	int n = 4096;
 	char *filenameInput = "unsorted4096.tweets";
 
-	// recursive serial
+	tweet * tweets = readTweets(n, filenameInput);
+	MPI_bitonicSort(tweets, n);
+
+	/*// recursive serial
 	tweet * tweets = readTweets(n, filenameInput);
 	z1 = bitonicSort(tweets, n, RECURSIVE_SERIAL);
 	writeTweets(tweets, n, "sorted4096_rec_serial.tweets");
@@ -209,7 +244,7 @@ int main() {
 	printf("Runtime of RECURSIVE_SERIAL in seconds:    %f\n", z1);
 	printf("Runtime of IMPERATIVE_SERIAL in seconds:   %f\n", z2);
 	printf("Runtime of RECURSIVE_PARALLEL in seconds:  %f\n", z3);
-	printf("Runtime of IMPERATIVE_PARALLEL in seconds: %f\n", z4);
+	printf("Runtime of IMPERATIVE_PARALLEL in seconds: %f\n", z4);*/
 
 	c = getchar();
 
