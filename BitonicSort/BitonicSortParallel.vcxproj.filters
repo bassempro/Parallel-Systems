@@ -15,18 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="parallel-sort-int.c">
-      <Filter>Ressourcendateien</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="parallel-sort-tweets.h">
-      <Filter>Ressourcendateien</Filter>
+    <ClInclude Include="tweets.h">
+      <Filter>Headerdateien</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="unsorted4096.tweets">
-      <Filter>Quelldateien</Filter>
-    </None>
+    <ClCompile Include="tweets.c">
+      <Filter>Ressourcendateien</Filter>
+    </ClCompile>
+    <ClCompile Include="test_tweets2.c">
+      <Filter>Ressourcendateien</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
