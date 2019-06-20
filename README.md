@@ -1,1 +1,0 @@
-# Parallel-Systems Projekt
